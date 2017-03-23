@@ -7,13 +7,6 @@ import scala.scalajs.js
 import js.annotation.{JSExport, ScalaJSDefined}
 import com.letstalkdata.scalinear.{Matrix, Vector}
 
-import scala.collection.JavaConverters._
-import js.JSConverters._
-import js.typedarray.TA2AB
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
-import scala.collection.JavaConversions
-
 @ScalaJSDefined
 @JSExport("ImageSignature")
 object ImageSignature extends js.Object {
@@ -23,13 +16,13 @@ object ImageSignature extends js.Object {
     val rgbs = data.sliding(3, 4)
 
     // take average of RGB to get gray levels
-    val grays = rgbs.map(rgb => rgb.sum.toDouble / rgb.length)
+    val grays: Iterator[Int] = rgbs.map(rgb => rgb.sum / rgb.length)
 
-    val rowVectors = grays.sliding(image.width).map(new Vector[Int](_))
+    val rowVectors = grays.sliding(image.width).map(row => Vector[Int](row:_*)).toSeq
 
     assert(rowVectors.length == image.height)
 
-    val matrix = new Matrix[Int](rowVectors)
+    val matrix = Matrix[Int](rowVectors:_*)
 
     new Signature(Seq(Seq(1)))
   }
