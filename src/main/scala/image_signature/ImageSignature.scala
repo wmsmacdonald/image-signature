@@ -24,6 +24,8 @@ object ImageSignature extends js.Object {
 
     val matrix = Matrix[Int](rowVectors:_*)
 
+    val cropped = Image.autoCrop(matrix, 10, 90)
+
     new Signature(Seq(Seq(1)))
   }
   def distance(): Int = {
