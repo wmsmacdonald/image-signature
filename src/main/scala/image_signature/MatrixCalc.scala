@@ -1,8 +1,6 @@
 package image_signature
 
 import com.letstalkdata.scalinear.{Matrix, Vector}
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
-import scala.reflect.ClassTag
 
 object MatrixCalc {
   // https://github.com/numpy/numpy/blob/v1.10.1/numpy/lib/function_base.py#L1116-L1175
@@ -28,7 +26,10 @@ object MatrixCalc {
   }
 
   // https://github.com/numpy/numpy/blob/v1.12.0/numpy/core/fromnumeric.py#L1710-L1814
-  def sum(m: Matrix[Int], axis: Int): Vector[Int] = {
+  def sum(m: Matrix[Int], axis: Int = -1): Vector[Int] = {
+    if (axis == -1) {
+      return Vector(m.asArray.map(v => sum(v)).sum)
+    }
     if (axis == 0) {
       val len = m.asArray(0).length
       m.asArray.fold(Vector.zeros[Int](len))((prev: Vector[Int], curr: Vector[Int]) => prev + curr)
@@ -72,10 +73,18 @@ object MatrixCalc {
     if (i == -1) v.length else i
   }
 
+  // grab rectangular section from matrix using rows
+  def slice(m: Matrix[Int], fromRow: Int, toRow: Int): Matrix[Int] = {
+    Matrix(m.asArray.slice(fromRow, toRow):_*)
+  }
+
+  // grab rectangular section from matrix using both rows and columns
+  // slice fromRow (inclusive) toRow (exclusive) and fromCol (inclusive) toCol (exclusive)
   def slice(m: Matrix[Int], fromRow: Int, toRow: Int, fromCol: Int, toCol: Int): Matrix[Int] = {
-    require(fromRow < m.rows + 1 && toRow < m.rows + 1)
-    require(fromCol < m.cols + 1 && toCol < m.cols + 1)
-    val rows = Matrix(m.asArray.slice(fromRow, toRow):_*)
-    Matrix(rows.t[Int].asArray.slice(fromCol, toCol):_*).t[Int]
+    slice(
+      // select rows and then transpose
+      slice(m, fromRow, toRow).t[Int],
+      // select columns and transpose back
+      fromCol, toCol).t[Int]
   }
 }

@@ -24,7 +24,25 @@ object ImageSignature extends js.Object {
 
     val matrix = Matrix[Int](rowVectors:_*)
 
-    val cropped = Image.autoCrop(matrix, 10, 90)
+    val cropped: Matrix[Int] = Image.autoCrop(matrix, 10, 90)
+
+    //val gridAverages = SignatureCalc.computeGridAverages(cropped, 10, 10)
+
+    val numBlocksHigh = 10
+    val numBlocksWide = 10
+
+    val coords = SignatureCalc.getGridCoords(cropped.rows, cropped.cols, numBlocksHigh, numBlocksWide)
+
+    val squares = SignatureCalc.getSquares(cropped, coords, numBlocksHigh, numBlocksWide)
+
+    // take average of squares
+    val squareAverages: List[Int] = squares.map(
+      (a: Matrix[Int]) => MatrixCalc.sum(a).asArray.head / a.size
+    )
+
+    // turn square averages into a numBlocksHigh - 1 by numBlocksWide - 1 matrix
+    val rows = squareAverages.sliding(squareAverages.length / squareAverages.length)
+    Matrix(rows.map(xs => Vector(xs:_*)).toSeq:_*)
 
     new Signature(Seq(Seq(1)))
   }
@@ -32,3 +50,5 @@ object ImageSignature extends js.Object {
     5
   }
 }
+
+

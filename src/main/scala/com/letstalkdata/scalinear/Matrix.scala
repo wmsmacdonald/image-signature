@@ -90,6 +90,8 @@ class Matrix[T] private(private val values:Array[Vector[T]]) {
    */
   def cols = if(rows > 0) values(0).length else 0
 
+  def size = rows * cols
+
   /**
    * Returns the matrix as an array of row Vectors
    * @return the matrix as an array of row Vectors
