@@ -87,4 +87,39 @@ object MatrixCalc {
       // select columns and transpose back
       fromCol, toCol).t[Int]
   }
+
+  // get square formed by upperOffset above/right of the target and
+  // lowerOffset below/left of the target
+  // ex. r = 3, c = 2  lowerOffset = 1, upperOffset = 2
+  // [0 1 2 3 4 5]
+  // [1[2 3 4 5]6]
+  // [2[3 4 5 6]7]
+  // [3[4 5 6 7]8]
+  // [4[5 6 7 8]9]
+  def getNeighbors(m: Matrix[Int], r: Int, c: Int, lowerOffset: Int, upperOffset: Int): Matrix[Int] = {
+    MatrixCalc.slice(m,
+      fromRow = r - lowerOffset,
+      toRow = r + upperOffset + 1,
+      fromCol = c - lowerOffset,
+      toCol = c + upperOffset + 1)
+  }
+
+  def getNeighbors(m: Matrix[Int], r: Int, c: Int, lowerOffset: Int, upperOffset: Int,
+                   includeSelf: Boolean): Array[Int] = {
+    // get slices from upper, left, right, and lower partitions without SELF
+    /*  [     UPPER       ]
+     *  [LEFT] SELF [RIGHT]
+     *  [     LOWER       ]
+     */
+    val upper = slice(m, r - lowerOffset, r, c - lowerOffset, c + upperOffset + 1)
+    val left = slice(m, r, r + 1, c - lowerOffset, c)
+    val right = slice(m, r, r + 1, c + 1, c + upperOffset + 1)
+    val lower = slice(m, r + 1, r + upperOffset + 1, c - lowerOffset, c + upperOffset + 1)
+
+    flatten(upper) ++ flatten(left) ++ flatten(right) ++ flatten(lower)
+  }
+
+  def flatten(m: Matrix[Int]): Array[Int] = {
+    m.asArray.flatMap(v => v.asArray)
+  }
 }

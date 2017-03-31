@@ -1,7 +1,5 @@
 package image_signature
 
-import com.letstalkdata.scalinear.{ Matrix, Vector }
-
 object SignatureCalc {
 
   def getGridCoords(rows: Int, cols: Int, numBlocksHigh: Int, numBlocksWide: Int): List[(Int, Int)] = {
@@ -18,23 +16,13 @@ object SignatureCalc {
     for { r <- rowsIndexes; c <- colsIndexes } yield (r, c)
   }
 
-  def getSquares(m: Matrix[Int], coords: List[(Int, Int)],
-                 numBlocksHigh: Int, numBlocksWide: Int): List[Matrix[Int]] = {
-
-    // from Goldberg paper
-    // first we get a P x P square centered at grid point
-    val P: Int = math.max(2, math.floor(0.5 + math.min(m.rows, m.cols) / 20).toInt)
-
-    // if P = 4, upperOffset = 2 and lowerOffset = 1
-    val upperOffset: Int = math.ceil((P - 1.0) / 2).toInt
-    val lowerOffset: Int = math.floor((P - 1.0) / 2).toInt
-
-    coords.map { case (r, c) =>
-      MatrixCalc.slice(m,
-        fromRow = r - lowerOffset,
-        toRow = r + upperOffset + 1,
-        fromCol = c - lowerOffset,
-        toCol = c + upperOffset + 1)
-    }
+  def normalizeValue(equalCutoff: Int, lighterCutoff: Int,
+                     darkerCutoff: Int)(value: Int): Int = {
+    if (value < -equalCutoff) // darker
+      if (value < darkerCutoff) -2 else -1 // much darker or just darker
+    else if (value > equalCutoff) // lighter
+      if (value > lighterCutoff) 2 else 1 // much lighter or just lighter
+    else 0
   }
+
 }
