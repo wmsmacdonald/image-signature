@@ -44,6 +44,8 @@ object MatrixCalc {
 
   def sum(v: Vector[Int]): Int = v.asArray.sum
 
+  def elementSum(m: Matrix[Int]) : Int = sum(m.flatten)
+
   // https://github.com/numpy/numpy/blob/v1.12.0/numpy/core/fromnumeric.py#L2033-L2097
   def cumsum(m: Matrix[Int], axis: Int = -1): Matrix[Int] = {
     if (axis == -1) {
@@ -88,24 +90,12 @@ object MatrixCalc {
       fromCol, toCol).t[Int]
   }
 
-  // get square formed by upperOffset above/right of the target and
+  // neighbors in square centered at r, c
+  // formed by upperOffset above/right of the target and
   // lowerOffset below/left of the target
-  // ex. r = 3, c = 2  lowerOffset = 1, upperOffset = 2
-  // [0 1 2 3 4 5]
-  // [1[2 3 4 5]6]
-  // [2[3 4 5 6]7]
-  // [3[4 5 6 7]8]
-  // [4[5 6 7 8]9]
-  def getNeighbors(m: Matrix[Int], r: Int, c: Int, lowerOffset: Int, upperOffset: Int): Matrix[Int] = {
-    MatrixCalc.slice(m,
-      fromRow = r - lowerOffset,
-      toRow = r + upperOffset + 1,
-      fromCol = c - lowerOffset,
-      toCol = c + upperOffset + 1)
-  }
-
-  def getNeighbors(m: Matrix[Int], r: Int, c: Int, lowerOffset: Int, upperOffset: Int,
-                   includeSelf: Boolean): Array[Int] = {
+  // return order: left to right, top to bottom
+  def getNeighbors(m: Matrix[Int], r: Int, c: Int, lowerOffset: Int,
+                   upperOffset: Int): Array[Int] = {
     // get slices from upper, left, right, and lower partitions without SELF
     /*  [     UPPER       ]
      *  [LEFT] SELF [RIGHT]
@@ -121,5 +111,25 @@ object MatrixCalc {
 
   def flatten(m: Matrix[Int]): Array[Int] = {
     m.asArray.flatMap(v => v.asArray)
+  }
+
+
+  def avg(m: Matrix[Int]): Int = elementSum(m) / m.size
+
+  def avg(v: Vector[Int]): Int = MatrixCalc.sum(v) / v.length
+
+  def zipWithIndex(m: Matrix[Int]): IndexedSeq[((Int, Int), Int)] =
+    for (i <- 0 until m.rows; j <- 0 until m.cols)
+      yield ((i, j), m(i, j))
+
+  def indexes(m: Matrix[Int]): IndexedSeq[(Int, Int)] =
+    for (r <- 0 until m.rows; c <- 0 until m.cols)
+    yield (r, c)
+
+  def shape(seq: Seq[Int], nrows: Int, ncols: Int): Matrix[Int] = {
+    require(seq.length == nrows * ncols)
+
+    val rows = seq.sliding(seq.length / rows)
+    Matrix(rows.map(xs => Vector(xs:_*)).toSeq:_*)
   }
 }

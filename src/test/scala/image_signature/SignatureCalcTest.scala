@@ -12,7 +12,7 @@ object SignatureCalcTest extends TestSuite {
       assert(coords == expected)
     }
     'normalizeValue {
-      val normalizeWithCutoffs = SignatureCalc.normalizeValue(2, 5, -10)
+      val normalizeWithCutoffs = SignatureCalc.normalizeValue(2, 5, -10)(_)
       assert(normalizeWithCutoffs(1) == 0)
       assert(normalizeWithCutoffs(3) == 1)
       assert(normalizeWithCutoffs(8) == 2)

@@ -26,8 +26,6 @@ object ImageSignature extends js.Object {
 
     val cropped: Matrix[Int] = Image.autoCrop(matrix, 10, 90)
 
-    //val gridAverages = SignatureCalc.computeGridAverages(cropped, 10, 10)
-
     val numBlocksHigh = 10
     val numBlocksWide = 10
 
@@ -37,41 +35,42 @@ object ImageSignature extends js.Object {
     // first we get a P x P square centered at grid point
     val P: Int = math.max(2, math.floor(0.5 + math.min(cropped.rows, cropped.cols) / 20).toInt)
 
-    // if P = 4, upperOffset = 2 and lowerOffset = 1
+    // number of pixels right/top of grid point
     val upperOffset: Int = math.ceil((P - 1.0) / 2).toInt
+    // number of pixes bottom/left of grid point
     val lowerOffset: Int = math.floor((P - 1.0) / 2).toInt
 
-    val squares = coords.map { case (r, c) =>
-      MatrixCalc.getNeighbors(cropped, r, c, lowerOffset, upperOffset)
+    val squares: List[Matrix[Int]] = coords.map { case (r, c) =>
+      // get square centered on grid point at r, c
+      // formed by upperOffset above/right of the target and
+      // lowerOffset below/left of the target
+      MatrixCalc.slice(cropped,
+        fromRow = r - lowerOffset, toRow = r + upperOffset + 1,
+        fromCol = c - lowerOffset, toCol = c + upperOffset + 1
+      )
     }
 
     // take average of squares
-    val squareAverages: List[Int] = squares.map(
-      (a: Matrix[Int]) => MatrixCalc.sum(a).asArray.head / a.size
-    )
+    val squareAverages: List[Int] = squares.map(MatrixCalc.avg)
 
     // turn square averages into a numBlocksHigh - 1 by numBlocksWide - 1 matrix
-    val rows = squareAverages.sliding(squareAverages.length / squareAverages.length)
-    val avgMatrix = Matrix(rows.map(xs => Vector(xs:_*)).toSeq:_*)
+    val avgMatrix: Matrix[Int] = MatrixCalc.shape(squareAverages, numBlocksHigh - 1, numBlocksWide - 1)
 
-    val neighborGroups = for (i <- 0 until avgMatrix.rows; j <- 0 until avgMatrix.cols)
-      yield MatrixCalc.getNeighbors(cropped, i, j, lowerOffset, upperOffset, includeSelf = true)
-    val differentialGroups: List[Array[Int]] = squareAverages.zip(neighborGroups).map {
-      case (avg, neighbors) => neighbors.map(n => n - avg)
+    // neighbors of grid points
+    val neighborGroups = MatrixCalc.indexes(cropped).map { case (i, j) =>
+      MatrixCalc.getNeighbors(avgMatrix, i, j, lowerOffset, upperOffset)
     }
 
-    val lighter = differentialGroups.flatten.filter(d => d > 2)
-    val darker = differentialGroups.flatten.filter(d => d < -2)
+    // differences between averages and neighbor averages
+    val differenceGroups: List[Array[Int]] = squareAverages.zip(neighborGroups).map {
+      case (avg, neighbors) => neighbors.map(_ - avg)
+    }
 
-    // get median as cutoff between lighter and much lighter
-    val lighterCutoff: Int = lighter.sorted.apply(lighter.length / 2)
-    // get median as cutoff between darker and much darker
-    val darkerCutoff: Int = darker.sorted.apply(darker.length / 2)
+    val normalizer = SignatureCalc.computeNormalizer(differenceGroups)
 
-    val normalizedWithCutoffs = SignatureCalc.normalizeValue(2, lighterCutoff, darkerCutoff)(_)
-    normalizedWithCutoffs(2)
-
-    new Signature(differentialGroups.map(diffs => diffs.map(normalizedWithCutoffs)))
+    // normalize all differences
+    val normalized = differenceGroups.map(diffs => diffs.map(normalizer))
+    new Signature(normalized)
   }
   def distance(): Int = {
     5
