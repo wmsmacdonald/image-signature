@@ -45,6 +45,7 @@ object MatrixCalc {
   def sum(v: Vector[Int]): Int = v.asArray.sum
 
   def elementSum(m: Matrix[Int]) : Int = sum(m.flatten)
+  def elementSum(m: Matrix[Float]) : Float = m.flatten.asArray.sum
 
   // https://github.com/numpy/numpy/blob/v1.12.0/numpy/core/fromnumeric.py#L2033-L2097
   def cumsum(m: Matrix[Int], axis: Int = -1): Matrix[Int] = {
@@ -114,9 +115,10 @@ object MatrixCalc {
   }
 
 
-  def avg(m: Matrix[Int]): Float = elementSum(m).toFloat / m.size
+  // fix divide by zero error
+  def avg(m: Matrix[Int]): Double = elementSum(m).toDouble / m.size
 
-  def avg(v: Vector[Int]): Float = MatrixCalc.sum(v).toFloat / v.length
+  def avg(v: Vector[Int]): Double = MatrixCalc.sum(v).toDouble / v.length
 
   def zipWithIndex(m: Matrix[Int]): IndexedSeq[((Int, Int), Int)] =
     for (i <- 0 until m.rows; j <- 0 until m.cols)

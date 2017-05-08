@@ -30,6 +30,7 @@ object SignatureCalc {
     else 0 // equal
   }
 
+  // TODO fix error with matrix of single value
   def computeNormalizer(differenceGroups: List[Array[Int]], equalCutoff: Int = 2): (Int => Int) = {
     // all differences that are lighter
     val lighter = differenceGroups.flatten.filter(_ > 2)

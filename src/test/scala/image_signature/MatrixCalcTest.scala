@@ -75,6 +75,16 @@ object MatrixCalcTest extends TestSuite {
       assert(sliced(8, 0) == 10)
       // bottom right corner
       assert(sliced(8, 8) == 18)
+
+      // [ 0 1 2 3 4 5 ]
+      // [ 1 2 3 4 5 6 ]
+      // [ 2 3 4 5 6 7 ]
+      // [ 3 4 5 6 7 8 ]
+      // [ 4 5 6 7 8 9 ]
+      // [ 5 6 7 8 9 10]
+      val rows3: IndexedSeq[Vector[Int]] = (0 to 5).map(n => Vector(n to n + 5:_*))
+      val m3: Matrix[Int] = Matrix[Int](rows3:_*)
+      //val sliced = MatrixCalc.slice(m3, 4, 1,)
     }
 
   }

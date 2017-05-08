@@ -40,12 +40,9 @@ object ImageSignature extends js.Object {
     // number of pixels right/top of grid point
     val upperOffset: Int = math.ceil((P - 1.0) / 2).toInt
 
-    val squares: List[Matrix[Int]] = coords.map { case (r, c) =>
-      Image.getSoftenedSquare(cropped, r, c, lowerOffset, upperOffset)
-    }
-
-    // take average of squares
-    val squareAverages: List[Int] = squares.map(MatrixCalc.avg).map(Math.round)
+    val squareAverages: List[Int] = coords.map { case (r, c) =>
+      Image.softenedSquareAvg(cropped, r, c, lowerOffset, upperOffset)
+    }.map(Math.round).map(_.toInt)
 
     // turn square averages into a numBlocksHigh - 1 by numBlocksWide - 1 matrix
     val avgMatrix: Matrix[Int] = MatrixCalc.shape(squareAverages, numBlocksHigh - 1, numBlocksWide - 1)

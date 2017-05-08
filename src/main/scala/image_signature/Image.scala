@@ -34,132 +34,62 @@ object Image {
   // get square centered on grid point at r, c
   // formed by upperOffset above/right of the target and
   // lowerOffset below/left of the target
-  def getSoftenedSquare(m: Matrix[Int], centerRow: Int, centerCol: Int, lowerOffset: Int,
-                        upperOffset: Int) : Matrix[Int] = {
+  def getSoftenedSquareAvg(m: Matrix[Int], centerRow: Int, centerCol: Int, lowerOffset: Int,
+                        upperOffset: Int) : Double = {
 
     val lowerRowBound = if (centerRow - lowerOffset > 0) centerRow - lowerOffset else 0
     val upperRowBound = if (centerRow + upperOffset < m.rows) centerRow + upperOffset else m.rows - 1
     val lowerColBound = if (centerCol - lowerOffset > 0) centerCol - lowerOffset else 0
     val upperColBound = if (centerCol + upperOffset < m.cols) centerCol + upperOffset else m.cols - 1
 
-    val rowIndexes = Range(lowerRowBound, upperRowBound + 1)
-    val colIndexes = Range(lowerColBound, upperColBound + 1)
+    val rowIndexes = lowerRowBound to upperRowBound
+    val colIndexes = lowerColBound to upperColBound
 
     // from Goldberg paper
     val softenedSquareUpperOffset = 1
     val softenedSquareLowerOffset = 1
 
-    val softenedSquareValues = rowIndexes.map(r => colIndexes.map(c => {
-      Math.round(
-        MatrixCalc.avg(
-          MatrixCalc.slice(m,
-            fromRow = r - softenedSquareLowerOffset, toRow = r + softenedSquareUpperOffset + 1,
-            fromCol = c - softenedSquareLowerOffset, toCol = r + softenedSquareUpperOffset + 1 )))
+    val softenedSquareValues: Seq[Double] = rowIndexes.flatMap(r => colIndexes.map(c => {
+      val slice =
+        MatrixCalc.slice(m,
+          fromRow = r - softenedSquareLowerOffset, toRow = r + softenedSquareUpperOffset + 1,
+          fromCol = c - softenedSquareLowerOffset, toCol = c + softenedSquareUpperOffset + 1)
+
+      val result: Double = MatrixCalc.avg(slice)
+      result
     }))
 
-    // put into matrix
-    Matrix[Int](softenedSquareValues.map(row => Vector(row:_*)):_*)
+    val sum: Double = softenedSquareValues.sum
+    sum / softenedSquareValues.length
   }
 
   def softenedSquareAvg(m: Matrix[Int], centerRow: Int, centerCol: Int, lowerOffset: Int,
                         upperOffset: Int): Double = {
-    // enforce a 2x2 square
-    require(upperOffset > 0)
-    require(lowerOffset >= 0)
+    // enforce at least a 2x2 square
+    require(upperOffset > 0, "upperOffset must be greater than 0")
+    require(lowerOffset >= 0, "lowerOffset must be greater or equal to 0")
 
     val surroundingSquare = MatrixCalc.slice(m,
       fromRow = centerRow - lowerOffset - 1, toRow = centerRow + upperOffset + 2,
       fromCol = centerCol - lowerOffset - 1, toCol = centerCol + upperOffset + 2
     )
 
-    // only counted once
-    val outerCorners = surroundingSquare(0, 0) +
-      surroundingSquare(surroundingSquare.rows - 1, 0) +
-      surroundingSquare(0, surroundingSquare.cols - 1) +
-      surroundingSquare(surroundingSquare.rows - 1, surroundingSquare.cols - 1)
+    val weightedSum =
+      BorderedRectangle.outerCornersSum(surroundingSquare) +
+        2 * BorderedRectangle.outerAdjacentToCornersSum(surroundingSquare) +
+        3 * BorderedRectangle.outerEdgesSum(surroundingSquare) +
+        4 * BorderedRectangle.innerCornersSum(surroundingSquare) +
+        6 * BorderedRectangle.innerEdgesSum(surroundingSquare) +
+        9 * BorderedRectangle.innerSum(surroundingSquare)
 
-    // pixes in the outer rim that are adjacent to the corner
-    // counted 3 times
-    val outerAdjacentToCorners = 2 * (
-      // top left
-      surroundingSquare(0, 1) +
-      surroundingSquare(1, 0) +
-      // top right
-      surroundingSquare(0, surroundingSquare.cols - 2) +
-      surroundingSquare(1, surroundingSquare.cols - 1) +
-      // bottom left
-      surroundingSquare(surroundingSquare.rows - 2, 0) +
-      surroundingSquare(surroundingSquare.rows - 1, 1) +
-      // bottom right
-      surroundingSquare(surroundingSquare.rows - 2, surroundingSquare.cols - 1) +
-      surroundingSquare(surroundingSquare.rows - 1, surroundingSquare.cols - 2)
-    )
+    val weightsSum =
+      BorderedRectangle.outerCornersNum(surroundingSquare) +
+        2 * BorderedRectangle.outerAdjacentToCornersNum(surroundingSquare) +
+        3 * BorderedRectangle.outerEdgesNum(surroundingSquare) +
+        4 * BorderedRectangle.innerCornersNum(surroundingSquare) +
+        6 * BorderedRectangle.innerEdgesNum(surroundingSquare) +
+        9 * BorderedRectangle.innerNum(surroundingSquare)
 
-    val outerTopEdge = 3 * (surroundingSquare.cols - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = 0, toRow = 1,
-        fromCol = 2, toCol = surroundingSquare.cols - 3
-      ))
-
-    val outerBottomEdge = 3 * (surroundingSquare.cols - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = surroundingSquare.rows - 1, toRow = surroundingSquare.rows,
-        fromCol = 2, toCol = surroundingSquare.cols - 3
-      ))
-
-    val outerLeftEdge = 3 * (surroundingSquare.rows - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = 2, toRow = surroundingSquare.rows - 3,
-        fromCol = 0, toCol = 1
-      ))
-
-    val outerRightEdge = 3 * (surroundingSquare.rows - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = 2, toRow = surroundingSquare.rows - 3,
-        fromCol = surroundingSquare.cols - 1, toCol = surroundingSquare.cols
-      ))
-
-    val innerCorners = 4 * (
-      surroundingSquare(1, 1) +
-        surroundingSquare(1, surroundingSquare.cols - 2) +
-        surroundingSquare(surroundingSquare.rows - 2, 1) +
-        surroundingSquare(surroundingSquare.rows - 2, surroundingSquare.cols - 2)
-      )
-
-    val innerTopEdge = 6 * (surroundingSquare.cols - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = 1, toRow = 2,
-        fromCol = 2, toCol = surroundingSquare.cols - 3
-      ))
-
-    val innerBottomEdge = 6 * (surroundingSquare.cols - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = surroundingSquare.rows - 2, toRow = surroundingSquare.rows - 1,
-        fromCol = 2, toCol = surroundingSquare.cols - 3
-      ))
-
-    val innerLeftEdge = 6 * (surroundingSquare.rows - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = 2, toRow = surroundingSquare.rows - 3,
-        fromCol = 1, toCol = 2
-      ))
-
-    val innerRightEdge = 6 * (surroundingSquare.rows - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = 2, toRow = surroundingSquare.rows - 3,
-        fromCol = surroundingSquare.cols - 2, toCol = surroundingSquare.cols - 1
-      ))
-
-    val inner = 9 * (surroundingSquare.rows - 4) * (surroundingSquare.cols - 4) *
-      MatrixCalc.elementSum(MatrixCalc.slice(surroundingSquare,
-        fromRow = 2, toRow = surroundingSquare.rows - 3,
-        fromCol = 2, toCol = surroundingSquare.cols - 3
-      ))
-
-    val weightedSum = Array(inner, innerRightEdge, innerLeftEdge, innerBottomEdge,
-      innerTopEdge, innerCorners, outerRightEdge, outerLeftEdge, outerBottomEdge,
-      outerTopEdge, outerAdjacentToCorners, outerCorners).sum
-
-    weightedSum.toDouble / surroundingSquare.size
+    weightedSum.toDouble / weightsSum
   }
 }
