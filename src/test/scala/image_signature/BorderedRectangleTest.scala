@@ -29,30 +29,6 @@ object BorderedRectangleTest extends TestSuite {
   val m3: Matrix[Int] = Matrix[Int](rows3:_*)
 
   def tests = TestSuite {
-    'sum {
-      val expected = Image.getSoftenedSquareAvg(m3, centerRow = 2, centerCol = 2,
-        lowerOffset = 1, upperOffset = 2)
-
-      val weightedSum =
-        BorderedRectangle.outerCornersSum(m3) +
-          2 * BorderedRectangle.outerAdjacentToCornersSum(m3) +
-          3 * BorderedRectangle.outerEdgesSum(m3) +
-          4 * BorderedRectangle.innerCornersSum(m3) +
-          6 * BorderedRectangle.innerEdgesSum(m3) +
-          9 * BorderedRectangle.innerSum(m3)
-
-      val weightsSum =
-        2 * BorderedRectangle.outerAdjacentToCornersNum(m3) +
-          3 * BorderedRectangle.outerEdgesNum(m3) +
-          4 * BorderedRectangle.innerCornersNum(m3) +
-          6 * BorderedRectangle.innerEdgesNum(m3) +
-          9 * BorderedRectangle.innerNum(m3)
-
-      val actual = weightedSum.toDouble / weightsSum
-
-      assert(expected == actual)
-    }
-
     'outerCornersNum {
       assert(BorderedRectangle.outerCornersNum(m1) == 4)
       assert(BorderedRectangle.outerCornersNum(m2) == 4)

@@ -11,14 +11,14 @@ import com.letstalkdata.scalinear.{Matrix, Vector}
 @JSExport("ImageSignature")
 object ImageSignature extends js.Object {
   def generate(image: ImageData): Signature = {
-    val data = image.data.toArray
-
-    val rgbs = data.sliding(3, 4)
+    val rgbs = image.data.sliding(3, 4)
 
     // take average of RGB to get gray levels
     val grays: Iterator[Int] = rgbs.map(rgb => rgb.sum / rgb.length)
 
-    val rowVectors = grays.sliding(image.width, image.width).map(row => Vector[Int](row:_*)).toSeq
+    // can't go faster
+    val rowVectors: Array[Vector[Int]] =
+      grays.sliding(image.width, image.width).map(row => Vector[Int](row:_*)).toArray
 
     assert(rowVectors.length == image.height, "image dimension not correct")
 

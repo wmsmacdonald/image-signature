@@ -3,9 +3,6 @@ package image_signature
 import com.letstalkdata.scalinear.{ Matrix, Vector }
 import utest._
 
-/**
-  * Created by bill on 3/30/17.
-  */
 object ImageTest extends TestSuite {
   def tests = TestSuite {
     'autoCrop {
@@ -17,6 +14,11 @@ object ImageTest extends TestSuite {
       val rows: IndexedSeq[Vector[Int]] = (0 to 10).map(n => Vector(n to n + 10:_*))
       val m: Matrix[Int] = Matrix[Int](rows:_*)
       val cropped: Matrix[Int] = Image.autoCrop(m, 10, 90)
+
+      val rows2: IndexedSeq[Vector[Int]] = (0 to 1000).map(n => Vector(n to n + 1000:_*))
+      val m2: Matrix[Int] = Matrix[Int](rows2:_*)
+      val cropped2: Matrix[Int] = Image.autoCrop(m2, 10, 90)
+
       assert(cropped.rows == 9)
       assert(cropped.cols == 9)
       // top left corner
@@ -29,7 +31,7 @@ object ImageTest extends TestSuite {
       assert(cropped(8, 8) == 18)
     }
 
-    /*'getSoftenedSquare {
+    'getSoftenedSquare {
       // [ 0 1 2 3 ... 10 ]
       // [ 1 2 3 4 ... 11 ]
       // [ 2 3 4 5 ... 12 ]
@@ -38,20 +40,7 @@ object ImageTest extends TestSuite {
       val rows: IndexedSeq[Vector[Int]] = (0 to 10).map(n => Vector(n to n + 10:_*))
       val m: Matrix[Int] = Matrix[Int](rows:_*)
 
-      val s1 = Image.getSoftenedSquare(m, 2, 3, 1, 1)
-      val s2 = Image.getSoftenedSquare(m, 0, 0, 1, 1)
-      val s3 = Image.getSoftenedSquare(m, 10, 9, 1, 1)
-
-      assert(s1.rows == 3)
-      assert(s1.cols == 3)
-      assert(s1(1, 1) == 5)
-      assert(s1(0, 0) == 3)
-
-      assert(s2.rows == 2)
-      assert(s2.cols == 2)
-      assert(s2(0, 1) == 1)
-
-      assert(s3(1, 1) == 19)
-    }*/
+      // TODO
+    }
   }
 }

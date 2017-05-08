@@ -10,7 +10,7 @@ object MatrixCalc {
       Matrix(pairs.map(vectors => vectors(1) - vectors(0)).toSeq:_*)
     }
     else if (axis == 1) {
-      Matrix(m.asArray.map((v: Vector[Int]) => diff(v)).toSeq:_*)
+      diff(m.t[Int], axis=0).t[Int]
     }
     else {
       throw new NotImplementedError()
@@ -118,7 +118,7 @@ object MatrixCalc {
   // fix divide by zero error
   def avg(m: Matrix[Int]): Double = elementSum(m).toDouble / m.size
 
-  def avg(v: Vector[Int]): Double = MatrixCalc.sum(v).toDouble / v.length
+  def avg(v: Vector[Int]): Float = MatrixCalc.sum(v).toFloat / v.length
 
   def zipWithIndex(m: Matrix[Int]): IndexedSeq[((Int, Int), Int)] =
     for (i <- 0 until m.rows; j <- 0 until m.cols)

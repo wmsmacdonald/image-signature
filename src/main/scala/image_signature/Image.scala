@@ -4,18 +4,22 @@ import com.letstalkdata.scalinear.{ Matrix, Vector }
 
 
 object Image {
+  // optimized some
   def autoCrop(m: Matrix[Int], lowerPercentile: Int, upperPercentile: Int): Matrix[Int] = {
-    MatrixCalc.absolute(MatrixCalc.diff(m, 1))
+    MatrixCalc.diff(m, axis = 0)
 
+    // TODO investigate whether rw and cw axis are switched
+    // sister repo image-match seems to be incorrect (the code is fixed in this version)
+    // https://github.com/ascribe/image-match/blob/master/image_match/goldberg.py#L283
     // cumulative sum to know where to cut off
     val rw = MatrixCalc.cumsum(MatrixCalc.sum(
       // get differences between rows
-      MatrixCalc.absolute(MatrixCalc.diff(m, axis = 1)),
-      axis = 1))
-    // same except for columns
-    val cw = MatrixCalc.cumsum(MatrixCalc.sum(
       MatrixCalc.absolute(MatrixCalc.diff(m, axis = 0)),
       axis = 0))
+    // same except for columns
+    val cw = MatrixCalc.cumsum(MatrixCalc.sum(
+      MatrixCalc.absolute(MatrixCalc.diff(m, axis = 1)),
+      axis = 1))
 
     val rowTotal = rw.asArray.last
     val colTotal = cw.asArray.last
@@ -34,35 +38,7 @@ object Image {
   // get square centered on grid point at r, c
   // formed by upperOffset above/right of the target and
   // lowerOffset below/left of the target
-  def getSoftenedSquareAvg(m: Matrix[Int], centerRow: Int, centerCol: Int, lowerOffset: Int,
-                        upperOffset: Int) : Double = {
-
-    val lowerRowBound = if (centerRow - lowerOffset > 0) centerRow - lowerOffset else 0
-    val upperRowBound = if (centerRow + upperOffset < m.rows) centerRow + upperOffset else m.rows - 1
-    val lowerColBound = if (centerCol - lowerOffset > 0) centerCol - lowerOffset else 0
-    val upperColBound = if (centerCol + upperOffset < m.cols) centerCol + upperOffset else m.cols - 1
-
-    val rowIndexes = lowerRowBound to upperRowBound
-    val colIndexes = lowerColBound to upperColBound
-
-    // from Goldberg paper
-    val softenedSquareUpperOffset = 1
-    val softenedSquareLowerOffset = 1
-
-    val softenedSquareValues: Seq[Double] = rowIndexes.flatMap(r => colIndexes.map(c => {
-      val slice =
-        MatrixCalc.slice(m,
-          fromRow = r - softenedSquareLowerOffset, toRow = r + softenedSquareUpperOffset + 1,
-          fromCol = c - softenedSquareLowerOffset, toCol = c + softenedSquareUpperOffset + 1)
-
-      val result: Double = MatrixCalc.avg(slice)
-      result
-    }))
-
-    val sum: Double = softenedSquareValues.sum
-    sum / softenedSquareValues.length
-  }
-
+  // optimized mostly
   def softenedSquareAvg(m: Matrix[Int], centerRow: Int, centerCol: Int, lowerOffset: Int,
                         upperOffset: Int): Double = {
     // enforce at least a 2x2 square
