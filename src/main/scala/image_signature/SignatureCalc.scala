@@ -6,11 +6,16 @@ object SignatureCalc {
     val squareHeight: Double = rows.toDouble / numBlocksHigh
     val squareWidth: Double = cols.toDouble / numBlocksHigh
 
-    // TODO check for floating point error
-    val rowsIndexes: List[Int] = (squareHeight until numBlocksHigh by squareHeight).toList.map(_.toInt)
-    val colsIndexes: List[Int] = (squareWidth until numBlocksWide by squareWidth).toList.map(_.toInt)
-    assert(rowsIndexes.length == numBlocksHigh - 1)
-    assert(colsIndexes.length == numBlocksWide - 1)
+    val rowsIndexes: List[Int] = (
+      squareHeight
+        // end before rows to avoid floating point error
+        until rows - (squareHeight / 2)
+        by squareHeight
+    ).toList.map(_.toInt)
+    val colsIndexes: List[Int] = (squareWidth until cols - (squareWidth / 2) by squareWidth).toList.map(_.toInt)
+
+    assert(rowsIndexes.length == numBlocksHigh - 1, "incorrect grid indexes")
+    assert(colsIndexes.length == numBlocksWide - 1, "incorrect grid indexes")
 
     // return tuples of index pairs (row, column)
     for { r <- rowsIndexes; c <- colsIndexes } yield (r, c)

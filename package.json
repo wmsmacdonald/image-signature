@@ -1,0 +1,34 @@
+{
+  "name": "image-signature",
+  "version": "0.1.0",
+  "description": "Library that hashes images in order to compare their similarity",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmsmacdonald/image-signature.git"
+  },
+  "keywords": [
+    "hash",
+    "pure",
+    "reverse",
+    "search"
+  ],
+  "author": "William MacDonald",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wmsmacdonald/image-signature/issues"
+  },
+  "homepage": "https://github.com/wmsmacdonald/image-signature#readme",
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "mocha": "^3.3.0",
+    "numjs": "^0.13.1",
+    "underscore": "^1.8.3"
+  }
+}

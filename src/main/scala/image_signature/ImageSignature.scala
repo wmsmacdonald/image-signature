@@ -18,9 +18,9 @@ object ImageSignature extends js.Object {
     // take average of RGB to get gray levels
     val grays: Iterator[Int] = rgbs.map(rgb => rgb.sum / rgb.length)
 
-    val rowVectors = grays.sliding(image.width).map(row => Vector[Int](row:_*)).toSeq
+    val rowVectors = grays.sliding(image.width, image.width).map(row => Vector[Int](row:_*)).toSeq
 
-    assert(rowVectors.length == image.height)
+    assert(rowVectors.length == image.height, "image dimension not correct")
 
     val matrix = Matrix[Int](rowVectors:_*)
 
@@ -35,30 +35,24 @@ object ImageSignature extends js.Object {
     // first we get a P x P square centered at grid point
     val P: Int = math.max(2, math.floor(0.5 + math.min(cropped.rows, cropped.cols) / 20).toInt)
 
-    // number of pixels right/top of grid point
-    val upperOffset: Int = math.ceil((P - 1.0) / 2).toInt
     // number of pixes bottom/left of grid point
     val lowerOffset: Int = math.floor((P - 1.0) / 2).toInt
+    // number of pixels right/top of grid point
+    val upperOffset: Int = math.ceil((P - 1.0) / 2).toInt
 
     val squares: List[Matrix[Int]] = coords.map { case (r, c) =>
-      // get square centered on grid point at r, c
-      // formed by upperOffset above/right of the target and
-      // lowerOffset below/left of the target
-      MatrixCalc.slice(cropped,
-        fromRow = r - lowerOffset, toRow = r + upperOffset + 1,
-        fromCol = c - lowerOffset, toCol = c + upperOffset + 1
-      )
+      Image.getSoftenedSquare(cropped, r, c, lowerOffset, upperOffset)
     }
 
     // take average of squares
-    val squareAverages: List[Int] = squares.map(MatrixCalc.avg)
+    val squareAverages: List[Int] = squares.map(MatrixCalc.avg).map(Math.round)
 
     // turn square averages into a numBlocksHigh - 1 by numBlocksWide - 1 matrix
     val avgMatrix: Matrix[Int] = MatrixCalc.shape(squareAverages, numBlocksHigh - 1, numBlocksWide - 1)
 
     // neighbors of grid points
-    val neighborGroups = MatrixCalc.indexes(cropped).map { case (i, j) =>
-      MatrixCalc.getNeighbors(avgMatrix, i, j, lowerOffset, upperOffset)
+    val neighborGroups = MatrixCalc.indexes(avgMatrix).map { case (i, j) =>
+      MatrixCalc.getNeighbors(avgMatrix, i, j, 1, 1)
     }
 
     // differences between averages and neighbor averages
@@ -70,10 +64,7 @@ object ImageSignature extends js.Object {
 
     // normalize all differences
     val normalized = differenceGroups.map(diffs => diffs.map(normalizer))
-    new Signature(normalized)
-  }
-  def distance(): Int = {
-    5
+    new Signature(normalized.flatten)
   }
 }
 

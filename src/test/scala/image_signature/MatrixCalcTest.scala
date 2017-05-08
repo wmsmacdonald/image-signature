@@ -76,6 +76,7 @@ object MatrixCalcTest extends TestSuite {
       // bottom right corner
       assert(sliced(8, 8) == 18)
     }
+
   }
 }
 

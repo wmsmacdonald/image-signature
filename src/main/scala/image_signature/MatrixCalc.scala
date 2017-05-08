@@ -114,9 +114,9 @@ object MatrixCalc {
   }
 
 
-  def avg(m: Matrix[Int]): Int = elementSum(m) / m.size
+  def avg(m: Matrix[Int]): Float = elementSum(m).toFloat / m.size
 
-  def avg(v: Vector[Int]): Int = MatrixCalc.sum(v) / v.length
+  def avg(v: Vector[Int]): Float = MatrixCalc.sum(v).toFloat / v.length
 
   def zipWithIndex(m: Matrix[Int]): IndexedSeq[((Int, Int), Int)] =
     for (i <- 0 until m.rows; j <- 0 until m.cols)
@@ -124,12 +124,19 @@ object MatrixCalc {
 
   def indexes(m: Matrix[Int]): IndexedSeq[(Int, Int)] =
     for (r <- 0 until m.rows; c <- 0 until m.cols)
-    yield (r, c)
+      yield (r, c)
 
   def shape(seq: Seq[Int], nrows: Int, ncols: Int): Matrix[Int] = {
     require(seq.length == nrows * ncols)
 
-    val rows = seq.sliding(seq.length / rows)
+    val rows = seq.sliding(seq.length / nrows, seq.length / nrows)
     Matrix(rows.map(xs => Vector(xs:_*)).toSeq:_*)
   }
+
+  def l2Norm(m: Matrix[Int]): Double = {
+    Math.sqrt(
+      m.asArray.flatMap(_.asArray).map(x => Math.pow(x, 2)).sum
+    )
+  }
+
 }
