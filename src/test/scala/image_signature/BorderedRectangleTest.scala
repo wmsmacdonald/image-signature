@@ -29,145 +29,132 @@ object BorderedRectangleTest extends TestSuite {
   val m3: Matrix[Int] = Matrix[Int](rows3:_*)
 
   def tests = TestSuite {
-    'outerCornersNum {
-      assert(BorderedRectangle.outerCornersNum(m1) == 4)
-      assert(BorderedRectangle.outerCornersNum(m2) == 4)
-      assert(BorderedRectangle.outerCornersNum(m3) == 4)
+
+    'outerCorners {
+      val r1: Array[Int] = BorderedRectangle.outerCorners(m1)
+      val r2: Array[Int] = BorderedRectangle.outerCorners(m2)
+      val r3: Array[Int] = BorderedRectangle.outerCorners(m3)
+
+      assert(r1.sameElements(Array(0, 3, 3, 6)))
+      assert(r2.sameElements(Array(0, 4, 4, 8)))
+      assert(r3.sameElements(Array(0, 5, 5, 10)))
     }
-    'outerCornersSum {
-      assert(BorderedRectangle.outerCornersSum(m1) == 12)
-      assert(BorderedRectangle.outerCornersSum(m2) == 16)
-      assert(BorderedRectangle.outerCornersSum(m3) == 20)
+    'outerAdjacentToCorners {
+      val r1: Array[Int] = BorderedRectangle.outerAdjacentToCorners(m1)
+      val r2: Array[Int] = BorderedRectangle.outerAdjacentToCorners(m2)
+      val r3: Array[Int] = BorderedRectangle.outerAdjacentToCorners(m3)
+
+      assert(r1.sameElements(Array(1, 2, 1, 4, 2, 5, 4, 5)))
+      assert(r2.sameElements(Array(1, 3, 1, 5, 3, 7, 5, 7)))
+      assert(r3.sameElements(Array(1, 4, 1, 6, 4, 9, 6, 9)))
     }
-    'outerAdjacentToCornersNum {
-      assert(BorderedRectangle.outerAdjacentToCornersNum(m1) == 8)
-      assert(BorderedRectangle.outerAdjacentToCornersNum(m2) == 8)
-      assert(BorderedRectangle.outerAdjacentToCornersNum(m3) == 8)
+    'outerTopEdge {
+      val r1: Array[Int] = BorderedRectangle.outerTopEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.outerTopEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.outerTopEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(2)))
+      assert(r3.sameElements(Array(2, 3)))
     }
-    'outerAdjacentToCornersSum {
-      assert(BorderedRectangle.outerAdjacentToCornersSum(m1) == 24)
-      assert(BorderedRectangle.outerAdjacentToCornersSum(m2) == 32)
-      assert(BorderedRectangle.outerAdjacentToCornersSum(m3) == 40)
+    'outerBottomEdge {
+      val r1: Array[Int] = BorderedRectangle.outerBottomEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.outerBottomEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.outerBottomEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(6)))
+      assert(r3.sameElements(Array(7, 8)))
     }
-    'outerTopEdgeNum {
-      assert(BorderedRectangle.outerTopEdgeNum(m1) == 0)
-      assert(BorderedRectangle.outerTopEdgeNum(m2) == 1)
-      assert(BorderedRectangle.outerTopEdgeNum(m3) == 2)
+    'outerLeftEdge {
+      val r1: Array[Int] = BorderedRectangle.outerLeftEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.outerLeftEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.outerLeftEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(2)))
+      assert(r3.sameElements(Array(2, 3)))
     }
-    'outerTopEdgeSum {
-      assert(BorderedRectangle.outerTopEdgeSum(m1) == 0)
-      assert(BorderedRectangle.outerTopEdgeSum(m2) == 2)
-      assert(BorderedRectangle.outerTopEdgeSum(m3) == 5)
+    'outerRightEdge {
+      val r1: Array[Int] = BorderedRectangle.outerRightEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.outerRightEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.outerRightEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(6)))
+      assert(r3.sameElements(Array(7, 8)))
     }
-    'outerBottomEdgeNum {
-      assert(BorderedRectangle.outerBottomEdgeNum(m1) == 0)
-      assert(BorderedRectangle.outerBottomEdgeNum(m2) == 1)
-      assert(BorderedRectangle.outerBottomEdgeNum(m3) == 2)
+    'outerEdges {
+      val r1: Array[Int] = BorderedRectangle.outerEdges(m1)
+      val r2: Array[Int] = BorderedRectangle.outerEdges(m2)
+      val r3: Array[Int] = BorderedRectangle.outerEdges(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(2, 2, 6, 6)))
+      assert(r3.sameElements(Array(2, 3, 2, 3, 7, 8, 7, 8)))
     }
-    'outerBottomEdgeSum {
-      assert(BorderedRectangle.outerBottomEdgeSum(m1) == 0)
-      assert(BorderedRectangle.outerBottomEdgeSum(m2) == 6)
-      assert(BorderedRectangle.outerBottomEdgeSum(m3) == 15)
+    'innerCorners {
+      val r1: Array[Int] = BorderedRectangle.innerCorners(m1)
+      val r2: Array[Int] = BorderedRectangle.innerCorners(m2)
+      val r3: Array[Int] = BorderedRectangle.innerCorners(m3)
+
+      assert(r1.sameElements(Array(2, 3, 3, 4)))
+      assert(r2.sameElements(Array(2, 4, 4, 6)))
+      assert(r3.sameElements(Array(2, 5, 5, 8)))
     }
-    'outerLeftEdgeNum {
-      assert(BorderedRectangle.outerLeftEdgeNum(m1) == 0)
-      assert(BorderedRectangle.outerLeftEdgeNum(m2) == 1)
-      assert(BorderedRectangle.outerLeftEdgeNum(m3) == 2)
+    'innerTopEdge {
+      val r1: Array[Int] = BorderedRectangle.innerTopEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.innerTopEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.innerTopEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(3)))
+      assert(r3.sameElements(Array(3, 4)))
     }
-    'outerLeftEdgeSum {
-      assert(BorderedRectangle.outerLeftEdgeSum(m1) == 0)
-      assert(BorderedRectangle.outerLeftEdgeSum(m2) == 2)
-      assert(BorderedRectangle.outerLeftEdgeSum(m3) == 5)
+    'innerBottomEdge {
+      val r1: Array[Int] = BorderedRectangle.innerBottomEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.innerBottomEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.innerBottomEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(5)))
+      assert(r3.sameElements(Array(6, 7)))
     }
-    'outerRightEdgeNum {
-      assert(BorderedRectangle.outerRightEdgeNum(m1) == 0)
-      assert(BorderedRectangle.outerRightEdgeNum(m2) == 1)
-      assert(BorderedRectangle.outerRightEdgeNum(m3) == 2)
+    'innerLeftEdge {
+      val r1: Array[Int] = BorderedRectangle.innerLeftEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.innerLeftEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.innerLeftEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(3)))
+      assert(r3.sameElements(Array(3, 4)))
     }
-    'outerRightEdgeSum {
-      assert(BorderedRectangle.outerRightEdgeSum(m1) == 0)
-      assert(BorderedRectangle.outerRightEdgeSum(m2) == 6)
-      assert(BorderedRectangle.outerRightEdgeSum(m3) == 15)
+    'innerRightEdge {
+      val r1: Array[Int] = BorderedRectangle.innerRightEdge(m1)
+      val r2: Array[Int] = BorderedRectangle.innerRightEdge(m2)
+      val r3: Array[Int] = BorderedRectangle.innerRightEdge(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(5)))
+      assert(r3.sameElements(Array(6, 7)))
     }
-    'outerEdgesNum {
-      assert(BorderedRectangle.outerEdgesNum(m1) == 0)
-      assert(BorderedRectangle.outerEdgesNum(m2) == 4)
-      assert(BorderedRectangle.outerEdgesNum(m3) == 8)
+    'innerEdges {
+      val r1: Array[Int] = BorderedRectangle.innerEdges(m1)
+      val r2: Array[Int] = BorderedRectangle.innerEdges(m2)
+      val r3: Array[Int] = BorderedRectangle.innerEdges(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(3, 3, 5, 5)))
+      assert(r3.sameElements(Array(3, 4, 3, 4, 6, 7, 6, 7)))
     }
-    'outerEdgesSum {
-      assert(BorderedRectangle.outerEdgesSum(m1) == 0)
-      assert(BorderedRectangle.outerEdgesSum(m2) == 16)
-      assert(BorderedRectangle.outerEdgesSum(m3) == 40)
-    }
-    'innerCornersNum {
-      assert(BorderedRectangle.innerCornersNum(m1) == 4)
-      assert(BorderedRectangle.innerCornersNum(m2) == 4)
-      assert(BorderedRectangle.innerCornersNum(m3) == 4)
-    }
-    'innerCornersSum {
-      assert(BorderedRectangle.innerCornersSum(m1) == 12)
-      assert(BorderedRectangle.innerCornersSum(m2) == 16)
-      assert(BorderedRectangle.innerCornersSum(m3) == 20)
-    }
-    'innerTopEdgeNum {
-      assert(BorderedRectangle.innerTopEdgeNum(m1) == 0)
-      assert(BorderedRectangle.innerTopEdgeNum(m2) == 1)
-      assert(BorderedRectangle.innerTopEdgeNum(m3) == 2)
-    }
-    'innerTopEdgeSum {
-      assert(BorderedRectangle.innerTopEdgeSum(m1) == 0)
-      assert(BorderedRectangle.innerTopEdgeSum(m2) == 3)
-      assert(BorderedRectangle.innerTopEdgeSum(m3) == 7)
-    }
-    'innerBottomEdgeNum {
-      assert(BorderedRectangle.innerBottomEdgeNum(m1) == 0)
-      assert(BorderedRectangle.innerBottomEdgeNum(m2) == 1)
-      assert(BorderedRectangle.innerBottomEdgeNum(m3) == 2)
-    }
-    'innerBottomEdgeSum {
-      assert(BorderedRectangle.innerBottomEdgeSum(m1) == 0)
-      assert(BorderedRectangle.innerBottomEdgeSum(m2) == 5)
-      assert(BorderedRectangle.innerBottomEdgeSum(m3) == 13)
-    }
-    'innerLeftEdgeNum {
-      assert(BorderedRectangle.innerLeftEdgeNum(m1) == 0)
-      assert(BorderedRectangle.innerLeftEdgeNum(m2) == 1)
-      assert(BorderedRectangle.innerLeftEdgeNum(m3) == 2)
-    }
-    'innerLeftEdgeSum {
-      assert(BorderedRectangle.innerLeftEdgeSum(m1) == 0)
-      assert(BorderedRectangle.innerLeftEdgeSum(m2) == 3)
-      assert(BorderedRectangle.innerLeftEdgeSum(m3) == 7)
-    }
-    'innerRightEdgeNum {
-      assert(BorderedRectangle.innerRightEdgeNum(m1) == 0)
-      assert(BorderedRectangle.innerRightEdgeNum(m2) == 1)
-      assert(BorderedRectangle.innerRightEdgeNum(m3) == 2)
-    }
-    'innerRightEdgeSum {
-      assert(BorderedRectangle.innerRightEdgeSum(m1) == 0)
-      assert(BorderedRectangle.innerRightEdgeSum(m2) == 5)
-      assert(BorderedRectangle.innerRightEdgeSum(m3) == 13)
-    }
-    'innerEdgesNum {
-      assert(BorderedRectangle.innerEdgesNum(m1) == 0)
-      assert(BorderedRectangle.innerEdgesNum(m2) == 4)
-      assert(BorderedRectangle.innerEdgesNum(m3) == 8)
-    }
-    'innerEdgesSum {
-      assert(BorderedRectangle.innerEdgesSum(m1) == 0)
-      assert(BorderedRectangle.innerEdgesSum(m2) == 16)
-      assert(BorderedRectangle.innerEdgesSum(m3) == 40)
-    }
-    'innerNum {
-      assert(BorderedRectangle.innerNum(m1) == 0)
-      assert(BorderedRectangle.innerNum(m2) == 1)
-      assert(BorderedRectangle.innerNum(m3) == 4)
-    }
-    'innerSum {
-      assert(BorderedRectangle.innerSum(m1) == 0)
-      assert(BorderedRectangle.innerSum(m2) == 4)
-      assert(BorderedRectangle.innerSum(m3) == 20)
+    'inner {
+      val r1: Array[Int] = BorderedRectangle.inner(m1)
+      val r2: Array[Int] = BorderedRectangle.inner(m2)
+      val r3: Array[Int] = BorderedRectangle.inner(m3)
+
+      assert(r1.length == 0)
+      assert(r2.sameElements(Array(4)))
+      assert(r3.sameElements(Array(4, 5, 5, 6)))
     }
   }
 }

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/image-signature.iml" filepath="$PROJECT_DIR$/.idea/modules/image-signature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/image-signature-build.iml" filepath="$PROJECT_DIR$/.idea/modules/image-signature-build.iml" />
     </modules>
   </component>
 </project>
