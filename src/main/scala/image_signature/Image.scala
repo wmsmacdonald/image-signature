@@ -31,43 +31,10 @@ object Image {
     MatrixCalc.slice(m, lowerRowLimit, upperRowLimit + 1, lowerColLimit, upperColLimit + 1)
   }
 
-  // get square centered on grid point at r, c
-  // formed by upperOffset above/right of the target and
-  // lowerOffset below/left of the target
-  def getSoftenedSquareAvg(m: Matrix[Int], centerRow: Int, centerCol: Int, lowerOffset: Int,
-                        upperOffset: Int) : Double = {
-
-    val lowerRowBound = if (centerRow - lowerOffset > 0) centerRow - lowerOffset else 0
-    val upperRowBound = if (centerRow + upperOffset < m.rows) centerRow + upperOffset else m.rows - 1
-    val lowerColBound = if (centerCol - lowerOffset > 0) centerCol - lowerOffset else 0
-    val upperColBound = if (centerCol + upperOffset < m.cols) centerCol + upperOffset else m.cols - 1
-
-    val rowIndexes = lowerRowBound to upperRowBound
-    val colIndexes = lowerColBound to upperColBound
-
-    // from Goldberg paper
-    val softenedSquareUpperOffset = 1
-    val softenedSquareLowerOffset = 1
-
-    val softenedSquareValues: Seq[Double] = rowIndexes.flatMap(r => colIndexes.map(c => {
-      val slice =
-        MatrixCalc.slice(m,
-          fromRow = r - softenedSquareLowerOffset, toRow = r + softenedSquareUpperOffset + 1,
-          fromCol = c - softenedSquareLowerOffset, toCol = c + softenedSquareUpperOffset + 1)
-
-      val result: Double = MatrixCalc.avg(slice)
-      result
-    }))
-
-    val sum: Double = softenedSquareValues.sum
-    sum / softenedSquareValues.length
-  }
-
   def softenedSquareAvg(m: Matrix[Int], centerRow: Int, centerCol: Int, lowerOffset: Int,
                         upperOffset: Int): Double = {
-    // enforce at least a 2x2 square
-    require(upperOffset > 0, "upperOffset must be greater than 0")
-    require(lowerOffset >= 0, "lowerOffset must be greater or equal to 0")
+
+    require(upperOffset > 0 && lowerOffset >= 0, "must be at least a 2x2 square")
 
     weightedAvg(
       MatrixCalc.slice(m,
@@ -80,23 +47,16 @@ object Image {
   def weightedAvg(m: Matrix[Int]): Double = {
     require(m.rows >= 4 && m.cols >= 4, "must be at least a 4x4 square")
 
-    val selectors = List(
-      BorderedRectangle.outerCorners _,
-      BorderedRectangle.outerAdjacentToCorners _,
-      BorderedRectangle.outerEdges _,
-      BorderedRectangle.innerCorners _,
-      BorderedRectangle.innerEdges _,
-      BorderedRectangle.inner _
-    )
-
-    val weights = List(
-      1,
-      2,
-      3,
-      4,
-      6,
-      9
-    )
+    // selectors: functions that operate on a Matrix and return the elements in the group
+    // weights: how many times the pixel is counted in the average
+    val (selectors, weights) = List(
+      (BorderedRectangle.outerCorners _, 1),
+      (BorderedRectangle.outerAdjacentToCorners _, 2),
+      (BorderedRectangle.outerEdges _, 3),
+      (BorderedRectangle.innerCorners _, 4),
+      (BorderedRectangle.innerEdges _, 6),
+      (BorderedRectangle.inner _, 9)
+    ).unzip
 
     val groups: Seq[Array[Int]] = selectors.map(selector => selector(m))
 
