@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59e7d71f-31fc-4b7a-9e51-31f0728325a9" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/image_signature/.BorderedRectangle.scala.swp" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/image_signature/Image.scala" afterPath="$PROJECT_DIR$/src/main/scala/image_signature/Image.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/image_signature/ImageSignature.scala" afterPath="$PROJECT_DIR$/src/main/scala/image_signature/ImageSignature.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/image_signature/MatrixCalc.scala" afterPath="$PROJECT_DIR$/src/main/scala/image_signature/MatrixCalc.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/image_signature/BorderedRectangleTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/image_signature/BorderedRectangleTest.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/image_signature/ImageTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/image_signature/ImageTest.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -82,8 +76,8 @@
       <file leaf-file-name="test.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/test.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="18" column="35" lean-forward="false" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+            <state relative-caret-position="311">
+              <caret line="48" column="33" lean-forward="false" selection-start-line="48" selection-start-column="33" selection-end-line="48" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -146,7 +140,6 @@
         <option value="$PROJECT_DIR$/src/main/scala/image_signature/ImageData.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/image_signature/Matrix.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/image_signature/MatrixAdvanced.scala" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/test/scala/image_signature/SignatureCalcTest.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/image_signature/Square.scala" />
         <option value="$PROJECT_DIR$/index.js" />
@@ -162,6 +155,7 @@
         <option value="$PROJECT_DIR$/src/main/scala/image_signature/ImageSignature.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/image_signature/Image.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/image_signature/ImageTest.scala" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -1144,12 +1138,12 @@
       <workItem from="1490850585619" duration="25201000" />
       <workItem from="1494057066247" duration="306000" />
       <workItem from="1494057384808" duration="30984000" />
-      <workItem from="1494205607576" duration="27084000" />
+      <workItem from="1494205607576" duration="27481000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="130032000" />
+    <option name="totallyTimeSpent" value="130429000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1437,13 +1431,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="7" lean-forward="false" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/image_signature/Square.scala" />
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
@@ -1595,10 +1582,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="4" lean-forward="false" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="18" column="35" lean-forward="false" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+        <state relative-caret-position="311">
+          <caret line="48" column="33" lean-forward="false" selection-start-line="48" selection-start-column="33" selection-end-line="48" selection-end-column="33" />
           <folding />
         </state>
       </provider>
