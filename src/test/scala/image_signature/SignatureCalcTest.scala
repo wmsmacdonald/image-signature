@@ -11,6 +11,7 @@ object SignatureCalcTest extends TestSuite {
       assert(coords.length == 81)
       assert(coords == expected)
     }
+
     'normalizeValue {
       val normalizeWithCutoffs = SignatureCalc.normalizeValue(2, 5, -10)(_)
       assert(normalizeWithCutoffs(1) == 0)
@@ -18,6 +19,10 @@ object SignatureCalcTest extends TestSuite {
       assert(normalizeWithCutoffs(8) == 2)
       assert(normalizeWithCutoffs(-7) == -1)
       assert(normalizeWithCutoffs(-11) == -2)
+    }
+
+    'computeNormalizer {
+      // TODO
     }
   }
 }

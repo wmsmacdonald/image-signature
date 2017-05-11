@@ -21,12 +21,19 @@ object SignatureCalc {
     for { r <- rowsIndexes; c <- colsIndexes } yield (r, c)
   }
 
+  // from Goldberg paper
+  // if difference is in range...
+  // [-equalCutoff, equalCutoff] then considered equal
+  // (equalCutoff, lighterCutoff] then considered lighter
+  // (lighterCutoff, 255] then considered much lighter
+  // [darkerCutoff, -equalCutoff) then considered darker
+  // [-255, darkerCutoff) then considered much lighter
   def normalizeValue(equalCutoff: Int, lighterCutoff: Int,
-                     darkerCutoff: Int)(value: Int): Int = {
-    if (value < -equalCutoff) // darker
-      if (value < darkerCutoff) -2 else -1 // much darker or just darker
-    else if (value > equalCutoff) // lighter
-      if (value > lighterCutoff) 2 else 1 // much lighter or just lighter
+                     darkerCutoff: Int)(difference: Int): Int = {
+    if (difference < -equalCutoff) // darker
+      if (difference < darkerCutoff) -2 else -1 // much darker or just darker
+    else if (difference > equalCutoff) // lighter
+      if (difference > lighterCutoff) 2 else 1 // much lighter or just lighter
     else 0 // equal
   }
 

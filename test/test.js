@@ -38,7 +38,7 @@ describe('imageSignature', function () {
       const signatureSmall = imageSignature.generate(imageDataSmall)
       this.timeout(40000)
       const signatureMedium = imageSignature.generate(imageDataMedium)
-      const distance = signatureSmall.distance(signatureMedium)
+      const distance = imageSignature.distance(signatureSmall, signatureMedium)
       assert(distance < 0.4)
     })
     it('distance between different images should be large', function () {
@@ -58,7 +58,7 @@ describe('imageSignature', function () {
       this.timeout(40000)
       const signatureIstanbul = imageSignature.generate(imageDataIstanbul)
       const signatureSpaceship = imageSignature.generate(imageDataSpaceship)
-      const distance = signatureIstanbul.distance(signatureSpaceship)
+      const distance = imageSignature.distance(signatureIstanbul, signatureSpaceship)
       assert(distance > 0.4)
     })
   })

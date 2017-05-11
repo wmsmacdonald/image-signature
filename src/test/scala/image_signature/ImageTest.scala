@@ -55,16 +55,15 @@ object ImageTest extends TestSuite {
       assert(cropped(8, 8) == 18)
     }
 
-    'softenedSquare {
-      // [ 0 1 2 3 ... 10 ]
-      // [ 1 2 3 4 ... 11 ]
-      // [ 2 3 4 5 ... 12 ]
-      // ...
-      // [ 10 11 12... 20 ]
-      val rows: IndexedSeq[Vector[Int]] = (0 to 10).map(n => Vector(n to n + 10:_*))
-      val m: Matrix[Int] = Matrix[Int](rows:_*)
+    'softenedSquareAvg {
+      Image.softenedSquareAvg(m1, centerRow = 1, centerCol = 1,
+        lowerOffset = 0, upperOffset = 1) ==> 3.0
 
-      // TODO
+      Image.softenedSquareAvg(m2, centerRow = 2, centerCol = 2,
+        lowerOffset = 1, upperOffset = 1) ==> 4.0
+
+      Image.softenedSquareAvg(m3, centerRow = 2, centerCol = 2,
+        lowerOffset = 1, upperOffset = 2) ==> 5.0
     }
 
     'weightedAvg {

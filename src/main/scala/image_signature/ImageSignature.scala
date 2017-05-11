@@ -1,16 +1,14 @@
 package image_signature
 
-import java.nio.{ByteBuffer, IntBuffer}
-import java.util
-
 import scala.scalajs.js
 import js.annotation.{JSExport, ScalaJSDefined}
 import com.letstalkdata.scalinear.{Matrix, Vector}
+import js.JSConverters._
 
 @ScalaJSDefined
 @JSExport("ImageSignature")
 object ImageSignature extends js.Object {
-  def generate(image: ImageData): Signature = {
+  def generate(image: ImageData): js.Array[Int] = {
     val rgbs = image.data.sliding(3, 4)
 
     // take average of RGB to get gray levels
@@ -61,7 +59,18 @@ object ImageSignature extends js.Object {
 
     // normalize all differences
     val normalized = differenceGroups.map(diffs => diffs.map(normalizer))
-    new Signature(normalized.flatten)
+    normalized.flatten.toJSArray
+  }
+
+  def distance(s1: js.Array[Int], s2: js.Array[Int]): Double = {
+    def l2Norm(a: js.Array[Int]): Double = Math.sqrt(a.map(Math.pow(_, 2)).sum)
+
+    l2Norm(
+      // elementwise subtraction
+      (s1, s2).zipped.map(_ - _)
+    ) / (
+      l2Norm(s1) + l2Norm(s2)
+      )
   }
 }
 
