@@ -1,6 +1,6 @@
 {
   "name": "image-signature",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Library that hashes images in order to compare their similarity",
   "main": "index.js",
   "directories": {

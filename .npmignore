@@ -1,0 +1,10 @@
+.idea
+src
+test
+project
+target/resolution-cache
+target/streams
+target/test-reports
+target/scala-2.12/classes
+target/scala-2.12/target
+target/scala-2.12/test-classes
